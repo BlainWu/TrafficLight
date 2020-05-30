@@ -26,7 +26,8 @@ for i ,data in enumerate(tqdm(img_list)):
                 target.append(1)
             target.append(data['score'])
             target.append(data['bbox'][0]),target.append(data['bbox'][1])
-            target.append(data['bbox'][2]),target.append(data['bbox'][3])
+            target.append(data['bbox'][2]+data['bbox'][0])
+            target.append(data['bbox'][3]+data['bbox'][1])
             targets.append(target)
         buffer_result.append(targets)
     else:#没有检测到
