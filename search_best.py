@@ -1,5 +1,9 @@
 import os
 import yaml
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import numpy as np
 
 epoch_list = []
 dir_list = os.listdir(os.getcwd())
@@ -14,20 +18,26 @@ epoch_list.sort(key = lambda x : int(x.split('_')[1]))
 del(epoch_list[-1])
 max_socre = 0.0
 score_list = []
+scores = []
 for i,data in enumerate(epoch_list):
     buffer_data = []
     xml_path = os.path.join(data,model_xml)
     fd = open(xml_path,'r')
-    fd = yaml.load(fd)
+    fd = yaml.safe_load(fd)
     score = float(fd['_Attributes']['eval_metrics']['bbox_map'])
     buffer_data.append(data)
     buffer_data.append(score)
+    scores.append(score)
     score_list.append(buffer_data)
     if score>max_socre:
         max_socre = score
         epoch = data
     else:
         continue
+
+plt.plot(scores,marker = 'o') #忽略前10epoch
+plt.savefig('./Loss.jpg')
+
 score_list.sort(key = lambda x:float(x[1]),reverse = True)
 print('-------------------------------------------------------------')
 print("验证集最优结果为{0},出自{1}".format(score_list[0][1],score_list[0][0]))
